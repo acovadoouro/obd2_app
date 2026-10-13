@@ -36,7 +36,7 @@ jobs:
 
       # 5. Compilar el archivo para iOS sin firma digital
       - name: Build iOS Application
-        run: flutter build ios --no-codesign --release
+        run: flutter build ios --no-codesign --release -v
 
       # 6. Guardar el resultado compilado con la ruta de salida correcta de Xcode
       - name: Upload Build Artifact
