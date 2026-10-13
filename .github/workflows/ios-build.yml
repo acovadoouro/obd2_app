@@ -18,11 +18,10 @@ jobs:
         uses: actions/checkout@v4
 
       # 2. Configurar el entorno de Java (requerido por algunas herramientas de compilación internas)
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          channel: 'stable'
 
       # 3. Configurar el entorno de Flutter
       - name: Set up Flutter
