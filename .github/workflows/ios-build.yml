@@ -31,8 +31,8 @@ jobs:
       - name: Install CocoaPods
         run: |
           cd ios
-          pod install --repo-update
-          cd ..
+          pod init
+          pod install
 
       # 5. Compilar el archivo para iOS sin firma digital
       - name: Build iOS Application
