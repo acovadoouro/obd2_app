@@ -1,0 +1,56 @@
+name: iOS Build
+
+# El flujo se activa al hacer push o pull request a la rama main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Flutter iOS
+    runs-on: macos-latest
+
+    steps:
+      # 1. Descargar el código del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configurar el entorno de Java (requerido por algunas herramientas de compilación internas)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 3. Configurar el entorno de Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          # Puedes especificar una versión fija si lo prefieres, ej: flutter-version: '3.24.0'
+
+      # 4. Descargar las dependencias de Flutter (pubspec.yaml)
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 5. Instalar los Pods de CocoaPods (dependencias nativas de iOS)
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      # 6. Compilar el archivo .app para iOS (sin firma digital)
+      # Nota: Usamos --no-codesign porque firmar requiere certificados de Apple Developer corporativos.
+      - name: Build iOS Application
+        run: flutter build ios --no-codesign --release
+
+      # 7. Guardar el resultado compilado como un artefacto descargable en GitHub
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-output
+          path: build/ios/iphoneos/Runner.app
+
